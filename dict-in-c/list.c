@@ -1,9 +1,9 @@
 #include "list.h"
 
-List* list_init()
+List* init_list()
 {
 	List* return_list = malloc(sizeof(List));
-
+	
 	if (NULL == return_list)
 	{
 		return NULL;
@@ -26,7 +26,7 @@ List* list_init()
 	return return_list;
 }
 
-void list_destroy(List* list, destroy_data_ptr func)
+void destroy_list(List* list, destroy_data_ptr func)
 {
 	if (NULL == list)
 	{
@@ -48,7 +48,7 @@ void list_destroy(List* list, destroy_data_ptr func)
 //	free(int_ptr);
 //}
 
-int list_add(List* list, void* value)
+int add_to_list(List* list, void* value)
 {
 	if (NULL == list)
 	{
@@ -79,7 +79,7 @@ int list_add(List* list, void* value)
 	return 1;
 }
 
-void list_remove(List* list, Node* node, destroy_data_ptr func)
+void remove_fron_list(List* list, Node* node, destroy_data_ptr func)
 {
 	if (NULL == node)
 	{
@@ -90,15 +90,16 @@ void list_remove(List* list, Node* node, destroy_data_ptr func)
 	{
 		return;
 	}
-
+	
 	if (NULL == node->back)
 	{
 		return;
 	}
+	
 
 	Node* back = node->back;
 	Node* next = node->next;
-
+	
 	// switch
 	back->next = next;
 	if (NULL != next->back)
@@ -114,7 +115,7 @@ void list_remove(List* list, Node* node, destroy_data_ptr func)
 	list->size--;
 }
 
-Node* list_first(List* list)
+Node* first_in_list(List* list)
 {
 	if (NULL == list)
 	{
@@ -125,7 +126,7 @@ Node* list_first(List* list)
 	return list->start->next;
 }
 
-Node* list_last(List* list)
+Node* last_in_list(List* list)
 {
 	if (NULL == list)
 	{
@@ -136,7 +137,7 @@ Node* list_last(List* list)
 	return list->last->back;
 }
 
-Node* list_next(Node* node)
+Node* next_in_list(Node* node)
 {
 	if (NULL == node)
 	{
@@ -145,7 +146,7 @@ Node* list_next(Node* node)
 	return node->next;
 }
 
-Node* list_back(Node* node)
+Node* back_in_list(Node* node)
 {
 	if (NULL == node)
 	{
@@ -154,7 +155,7 @@ Node* list_back(Node* node)
 	return node->back;
 }
 
-int list_len(List* list)
+int len_list(List* list)
 {
 	if (NULL == list)
 	{

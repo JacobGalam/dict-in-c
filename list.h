@@ -10,19 +10,19 @@ typedef struct List
 	int size;
 } List;
 
-List* init_list();
-void destroy_list(List* list, destroy_data_ptr func);
+List* list_init();
+void list_destroy(List* list, destroy_data_ptr func);
 
-int add_to_list(List* list, void* value);
-void remove_fron_list(List* list, Node* node, destroy_data_ptr func);
+int list_add(List* list, void* value);
+void list_remove(List* list, Node* node, destroy_data_ptr func);
 
-Node* first_in_list(List* list);
-Node* last_in_list(List* list);
+Node* list_first(List* list);
+Node* list_last(List* list);
 
-Node* next_in_list(Node* node);
-Node* back_in_list(Node* node);
+Node* list_next(Node* node);
+Node* list_back(Node* node);
 
-int len_list(List* list);
+int list_len(List* list);
 
 //// return -1 if list null
 //float average_list(List* list);

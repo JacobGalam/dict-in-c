@@ -42,9 +42,10 @@ typedef struct Line
 	List list;
 } StrDict;
 
+
 Dict* init_dict_pars(int start_capacity, int element_per_bucket, DictFunctions functions);
 Dict* init_dict(DictFunctions functions);
-void dict_free(Dict* dict);
+void free_dict(Dict* dict);
 // void dict_set_pair(Dict* dict, DictPair* pair);
 int dict_insert(Dict* dict, void* key, void* value);
 int dict_insert_pair(Dict* dict, DictPair* pair);
