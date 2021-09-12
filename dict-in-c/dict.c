@@ -2,6 +2,7 @@
 
 void destory_nothing(void* _)
 {
+
 }
 
 int dict_insert_pair(Dict* dict, DictPair* pair)
@@ -17,7 +18,7 @@ int dict_insert_pair(Dict* dict, DictPair* pair)
 	unsigned long index = dict->functions.hash_func(pair->key);
 	unsigned long capacity_index = index % dict->num_buckets;
 
-	if (0 == list_add(dict->buckets[capacity_index], pair))
+	if (0 == add_to_list(dict->buckets[capacity_index], pair))
 	{
 		free(pair);
 		return 0;
@@ -33,7 +34,7 @@ void dict_reassign_pair(Dict* dict, void* key, void* new_value)
 	unsigned long capacity_index = index % dict->num_buckets;
 	List* list = dict->buckets[capacity_index];
 
-	Node* now_node = list_first(list);
+	Node* now_node = first_in_list(list);
 	while (NULL != now_node)
 	{
 		DictPair* pair = now_node->data;
@@ -43,7 +44,7 @@ void dict_reassign_pair(Dict* dict, void* key, void* new_value)
 			pair->value = new_value;
 			return;
 		}
-		now_node = list_next(now_node);
+		now_node = next_in_list(now_node);
 	}
 }
 
@@ -53,7 +54,7 @@ void dict_remove(Dict* dict, void* key)
 	unsigned long capacity_index = index % dict->num_buckets;
 	List* list = dict->buckets[capacity_index];
 
-	Node* now_node = list_first(list);
+	Node* now_node = first_in_list(list);
 	while (NULL != now_node)
 	{
 		DictPair* pair = now_node->data;
@@ -76,7 +77,7 @@ void dict_remove(Dict* dict, void* key)
 
 			return;
 		}
-		now_node = list_next(now_node);
+		now_node = next_in_list(now_node);
 	}
 }
 
@@ -86,7 +87,7 @@ int dict_find(Dict* dict, void* key)
 	unsigned long capacity_index = index % dict->num_buckets;
 	List* list = dict->buckets[capacity_index];
 
-	Node* now_node = list_first(list);
+	Node* now_node = first_in_list(list);
 	while (NULL != now_node)
 	{
 		DictPair* pair = now_node->data;
@@ -94,7 +95,7 @@ int dict_find(Dict* dict, void* key)
 		{
 			return 1;
 		}
-		now_node = list_next(now_node);
+		now_node = next_in_list(now_node);
 	}
 	return 0;
 }
@@ -105,7 +106,7 @@ void* dict_get(Dict* dict, void* key)
 	unsigned long capacity_index = index % dict->num_buckets;
 	List* list = dict->buckets[capacity_index];
 
-	Node* now_node = list_first(list);
+	Node* now_node = first_in_list(list);
 	while (NULL != now_node)
 	{
 		DictPair* pair = now_node->data;
@@ -113,7 +114,7 @@ void* dict_get(Dict* dict, void* key)
 		{
 			return pair->value;
 		}
-		now_node = list_next(now_node);
+		now_node = next_in_list(now_node);
 	}
 	return NULL;
 }
@@ -143,14 +144,14 @@ int _dict_resize(Dict* dict, int new_num_buckets)
 	for (int i = 0; i < old_num_buckets; i++)
 	{
 		List* list = buckets[i];
-		Node* now_node = list_first(list);
+		Node* now_node = first_in_list(list);
 
 		while (NULL != now_node)
 		{
 			dict_insert_pair(dict, now_node->data);
-			now_node = list_next(now_node);
+			now_node = next_in_list(now_node);
 		}
-		list_destroy(list, destory_nothing);
+		destroy_list(list, destory_nothing);
 	}
 	return 1;
 }
@@ -158,7 +159,7 @@ int _dict_resize(Dict* dict, int new_num_buckets)
 int _dict_init_all(Dict* dict)
 {
 	dict->buckets = malloc(sizeof(List*) * dict->num_buckets);
-
+	
 	if (NULL == dict->buckets)
 	{
 		return 0;
@@ -166,12 +167,12 @@ int _dict_init_all(Dict* dict)
 
 	for (int i = 0; i < dict->num_buckets; i++)
 	{
-		dict->buckets[i] = list_init();
+		dict->buckets[i] = init_list();
 		if (NULL == dict->buckets[i])
 		{
 			for (int j = 0; j < i; j++)
 			{
-				list_destroy(dict->buckets[j], destory_nothing);
+				destroy_list(dict->buckets[j], destory_nothing);
 			}
 			free(dict->buckets);
 			return 0;
@@ -190,15 +191,15 @@ void _dict_free_all(Dict* dict)
 	for (int i = 0; i < dict->len; i++)
 	{
 		List* bucket = dict->buckets[i];
-		Node* node = list_first(bucket);
+		Node* node = first_in_list(bucket);
 		while (NULL != node)
 		{
 			DictPair* pair = node->data;
 			dict->functions.destory_key(pair->key);
 			dict->functions.destory_value(pair->value);
-			node = list_next(node);
+			node = next_in_list(node);
 		}
-		list_destroy(dict->buckets[i], destory_nothing);
+		destroy_list(dict->buckets[i], destory_nothing);
 	}
 
 	free(dict->buckets);
@@ -214,7 +215,7 @@ DictPair* _init_pair(void* key, void* value)
 
 	pair->key = key;
 	pair->value = value;
-
+	
 	return pair;
 }
 
@@ -232,6 +233,7 @@ Dict* init_dict_pars(int start_num_buckets, int element_per_bucket, DictFunction
 	dict->element_per_bucket = element_per_bucket;
 	dict->functions = functions;
 
+
 	if (0 == _dict_init_all(dict))
 	{
 		free(dict);
@@ -246,8 +248,9 @@ Dict* init_dict(DictFunctions functions)
 	return init_dict_pars(8, 50, functions);
 }
 
-void dict_free(Dict* dict)
+void free_dict(Dict* dict)
 {
 	_dict_free_all(dict);
 	free(dict);
 }
+

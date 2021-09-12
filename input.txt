@@ -1,0 +1,9 @@
+CHAR
+B
+6
+INT
+A
+5
+FLOAT
+C
+7

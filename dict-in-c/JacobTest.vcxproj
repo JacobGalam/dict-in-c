@@ -143,10 +143,9 @@
     <ClCompile Include="dict.c" />
     <ClCompile Include="JacobTest.cpp" />
     <ClCompile Include="list.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="node.c" />
     <ClCompile Include="queue.c" />
-    <ClCompile Include="stack.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="array.h" />
